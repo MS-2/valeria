@@ -31,7 +31,7 @@ export const Home = () => {
       <input type="password" name="pass" autoComplete="true" defaultValue="admin" />
       <button>Log In</button>
       {logError}
-      <div>hola</div>
+      <div>hola.</div>
     </form>
   );
 };
