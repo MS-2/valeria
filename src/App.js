@@ -8,10 +8,10 @@ import Form from 'react-bootstrap/Form';
 import { Col } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { ContextUser } from './Contexto';
-import decode from 'jwt-decode';
 import Header from './header';
 import '@rmwc/chip/styles';
 import '@rmwc/tooltip/styles';
+import { Home } from './Home';
 
 
 function App() {
@@ -54,34 +54,6 @@ function App() {
     return (
       <div>NotFoundfound</div>
     )
-}
-
-const Home = () => {
-  const contexto = useContext(ContextUser);
-  const start = e => {
-    e.preventDefault();
-    let formData = new FormData(e.target);
-    let user = {}
-    for (let input of formData.entries()) { user[input[0]] = input[1] }
-    axios.post("api/auth/signin", user)
-      .then(response => {
-        // console.log(contexto)
-        contexto.setisAuth(true)
-        contexto.settoken(response.data.token)
-        let id = decode(response.data.token)
-        contexto.setid(id.id)
-      })
-      .catch(error => {
-        console.log(error.response.data.msg)
-      })
-  }
-  return (
-    <form onSubmit={start}>
-      <input type="email" name="email" defaultValue="admin@localhost" />
-      <input type="password" name="pass" autoComplete="true" defaultValue="admin" />
-      <button>Log In</button>
-    </form>
-  )
 }
 
 const Empresa = () => {
@@ -171,12 +143,12 @@ const Empresa = () => {
         <Button variant="primary" type="submit">Guardar</Button>
       </Form>
 
-      <h1>hola empresa</h1>
+      {/* <h1>hola empresa</h1>
       <form onSubmit={crear}>
         <input type="text" name="name" list="[1,2,3]" />
         <input type="text" name="color" />
         <button>registrar</button>
-      </form>
+      </form> */}
       <pre>{JSON.stringify(contexto.companys, null, 2)}</pre>
     </div>
 
@@ -291,7 +263,7 @@ const Main = (props) => {
   console.log(contexto)
 
   const listaDiv = empresas.map((empresa) =>
-    <button style={{ margin: 5, borderStyle: "solid", backgroundColor: "pink", width: 300, height: 150 }}>
+    <button key={empresa._id} style={{ margin: 5, borderStyle: "solid", backgroundColor: "pink", width: 300, height: 150 }}>
       <div onClick={() => history.push('/empresa/' + empresa._id)}>
         <div>
           {empresa.empresa.name}
@@ -305,7 +277,7 @@ const Main = (props) => {
   return (
     <div>
 
-      <pre><h1>EMPRESAS</h1>{JSON.stringify(empresas, ["_id", "name", "createdAt"], 1)}</pre>
+      <pre><h1>EMPRESAS</h1>{JSON.stringify(empresas, ["_id", "name", "empresa","nit"], 2)}</pre>
       <div>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
           {listaDiv}
@@ -384,18 +356,19 @@ const Lista = () => {
 }
 
 
-function Child() {
+function Child(props) {
   const contexto = useContext(ContextUser);
   const { userId } = useParams();
   const options = { headers: { 'x-access-token': contexto.token } };
+  const { history } = props;
   const [fetch, setfetch] = useState(false);
   const [user, setuser] = useState({});
   const [role, setrole] = useState();
   const [rols, setrols] = useState([]);
   const [search, setSearch] = useState("");
   const [isPhone, setisPhone] = useState(/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent));
-
   const [filteredUsers, setfilteredUsers] = useState([]);
+
   useEffect(() => {
     setfilteredUsers(
       rols.filter((user) =>
@@ -465,6 +438,21 @@ function Child() {
       })
   }
 
+  const eliminarUser = (id) => {
+    console.log(id)
+    axios.delete("api/user/" + id, options)
+      .then(response => {
+        history.push("/usuario/lista")
+        contexto.setfetch(true);
+        // console.log("usuario actualizado : ", response.data);
+        setfetch(true);
+     
+      })
+      .catch(error => {
+        console.log("error")
+      })
+  }
+
   if (!isPhone) {
     return (
       <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-evenly" }}>
@@ -473,7 +461,12 @@ function Child() {
           <h4>usuario: {JSON.stringify(user.email)}</h4>
           <h4>usuario: {JSON.stringify(user._id)}</h4>
           <h4>usuario: {JSON.stringify(user.createdAt)}</h4>
+
+          <button onClick={()=>eliminarUser(userId)} style={{ backgroundColor: "silver" }}>
+            eliminar
+          </button>
         </div>
+
         <div style={{ display: "flex", flexDirection: "column", backgroundColor: "pink" }}>
           <div style={{ backgroundColor: "crimson", marginBottom: 10 }}>
             <h4>roles: {JSON.stringify(user.role)}</h4>
