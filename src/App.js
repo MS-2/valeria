@@ -1,23 +1,28 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect,useCallback } from 'react';
 import axios from "axios";
-import { BrowserRouter as Router, Route, Switch, Redirect, useParams, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect, useParams, Link, useHistory, StaticRouter,withRouter } from "react-router-dom";
 import { Tooltip } from '@rmwc/tooltip';
 import { Chip, ChipSet } from '@rmwc/chip';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-import { Col } from 'react-bootstrap';
+import { Col, Container, Row, Image, Badge  } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { ContextUser } from './Contexto';
 import Header from './header';
 import '@rmwc/chip/styles';
 import '@rmwc/tooltip/styles';
 import { Home } from './Home';
+import { TopAppBar, TopAppBarRow, TopAppBarSection, TopAppBarNavigationIcon, TopAppBarTitle, TopAppBarActionItem, TopAppBarFixedAdjust, } from '@rmwc/top-app-bar';
+import { Drawer, DrawerHeader, DrawerTitle, DrawerSubtitle, DrawerContent } from '@rmwc/drawer';
+import { List, ListItem, ListItemGraphic } from '@rmwc/list'
 
 
 function App() {
 
   const [boo, setboo] = useState(false);
   const user = useContext(ContextUser);
+
+
   if (!user.isAuth)
     return (
       <Router basename={process.env.PUBLIC_URL}>
@@ -33,13 +38,15 @@ function App() {
     return (
       <Router basename={process.env.PUBLIC_URL}>
         <Header></Header>
+        {user.open ? <Example context={user.users}></Example> : null}
         <Switch>
           <Route exact path="/" component={Main} />
           <Route exact path="/empresa/crear" component={Empresa} />
           <Route exact path="/usuario/crear" component={Usuario} />
           <Route exact path="/usuario/lista" component={Lista} />
-          <Route path="/usuario/lista/:userId" children={<Child />} />
-          <Route path="/empresa/:id" children={<Childz />} />
+    
+          <Route path="/usuario/lista/:userId" children={<Child  />} />
+          <Route path="/empresa/:id" children={<Childz  />} />
           <Route component={() => <div>no found</div>} />
         </Switch>
       </Router>
@@ -59,7 +66,8 @@ function App() {
 const Empresa = () => {
   const contexto = useContext(ContextUser);
   const options = { headers: { 'x-access-token': contexto.token } };
-
+  
+/** => funcion para crear empresa app @type {Object} */ /**/
   const crear = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -260,7 +268,7 @@ const Main = (props) => {
   const usuarios = contexto.users;
   const roles = contexto.rols;
   const { history } = props;
-  console.log(contexto)
+  // console.log(history)
 
   const listaDiv = empresas.map((empresa) =>
     <button key={empresa._id} style={{ margin: 5, borderStyle: "solid", backgroundColor: "pink", width: 300, height: 150 }}>
@@ -360,15 +368,16 @@ function Child(props) {
   const contexto = useContext(ContextUser);
   const { userId } = useParams();
   const options = { headers: { 'x-access-token': contexto.token } };
-  const { history } = props;
   const [fetch, setfetch] = useState(false);
   const [user, setuser] = useState({});
   const [role, setrole] = useState();
   const [rols, setrols] = useState([]);
+  const [open, setOpen] = React.useState(false);
   const [search, setSearch] = useState("");
   const [isPhone, setisPhone] = useState(/Android|webOS|iPhone|iPad|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i.test(navigator.userAgent));
   const [filteredUsers, setfilteredUsers] = useState([]);
-
+  let history = useHistory();
+  // console.log(props);
   useEffect(() => {
     setfilteredUsers(
       rols.filter((user) =>
@@ -442,67 +451,105 @@ function Child(props) {
     console.log(id)
     axios.delete("api/user/" + id, options)
       .then(response => {
-        history.push("/usuario/lista")
+       
         contexto.setfetch(true);
-        // console.log("usuario actualizado : ", response.data);
-        setfetch(true);
+      // console.log("usuario actualizado : ", response.data);
+        history.push("/");
+
      
       })
       .catch(error => {
-        console.log("error")
+        console.log(error)
       })
   }
 
-  if (!isPhone) {
-    return (
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-evenly" }}>
-        <div style={{ backgroundColor: "red" }}>
-          <h4>usuario: {JSON.stringify(user.name)}</h4>
-          <h4>usuario: {JSON.stringify(user.email)}</h4>
-          <h4>usuario: {JSON.stringify(user._id)}</h4>
-          <h4>usuario: {JSON.stringify(user.createdAt)}</h4>
+  
 
-          <button onClick={()=>eliminarUser(userId)} style={{ backgroundColor: "silver" }}>
-            eliminar
-          </button>
+  // if (!isPhone) {
+    return (
+      <div style={{display:"flex", width:100+"%",height:150+"vh", flexWrap:"wrap" }}>
+
+
+        <div style={{flex:1, textAlign:"center"}}>
+
+              <div >
+              <Row>
+                <Col >
+                  <Image  onClick={()=>console.log("foto")} src={"https://www.pavilionweb.com/wp-content/uploads/2017/03/man-300x300.png"} roundedCircle />
+                </Col>
+              </Row>
+              <Row style={{marginTop:10}}>
+                <Col>
+                <h2>  {user.name}</h2>
+                </Col>
+              </Row>
+            </div>
+            
+            <Table  >
+            <thead>
+              <tr>
+                <th>Email:</th>
+                <th>{user.email}</th>
+              </tr>
+            </thead>
+            </Table>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", backgroundColor: "pink" }}>
+
+        <div style={{flex:1, backgroundColor:"pink"}}>   {/* caja 2 */}
+       
+
           <div style={{ backgroundColor: "crimson", marginBottom: 10 }}>
-            <h4>roles: {JSON.stringify(user.role)}</h4>
-
-            <ChipSet>
+          <div>
+            lista de roles:
+            <h3>
               {rols.map(roles =>
-                <Tooltip content={roles.name}>
-                  <Chip label={roles} onTrailingIconInteraction={() => eliminarRol(roles)} trailingIcon="close"></Chip>
-                </Tooltip>
+              <Badge pill variant="warning">
+              
+                {roles}-
+                
+                <spam style={{color:"red"}} onClick={()=>{if (roles === "admin") {
+                  console.log("no puedes eliminar el admin")
+                }else{
+                  eliminarRol(roles)
+                }}}>x</spam>
+              </Badge>
               )}
-            </ChipSet>
+              </h3>
+          </div>
 
-            {/* <div> {rols.length > 0 ? rols.map(roles => <div onClick={()=>eliminarRol(roles)}>{roles}</div>) : "Loading..."}</div> */}
-            <select onChange={e => updateRole(e.target.value)} value={role}  >
-              <option disabled selected value> -- select an option -- </option>
-              {contexto.rols.map((role, index) => {
-                return <option>{role.name}</option>;
-              })
-              }
-            </select>
+            <div>
+            <Form.Group onChange={e => updateRole(e.target.value)} value={role} >
+              <Form.Label>añadir roles/pulsar x roja para eliminar</Form.Label>
+              <Form.Control as="select" custom>
+                {
+                contexto.rols.map((role, index) => 
+                    { 
+                      return <option>{role.name}</option>  
+                    } 
+                  )
+                }
+              </Form.Control>
+            </Form.Group>
+            </div>
           </div>
 
 
           <div style={{ backgroundColor: "green", marginBottom: 10 }}>
-            <h4>relaciones: {JSON.stringify(user.users, ["name"])}</h4>
-            {/* <h4>relaciones: {JSON.stringify(user, ["users"])}</h4> */}
-            {/* <input type="text" placeholder="busqueda" onChange={(e) => pushUser(e.target.value)}/> */}
-            <select onChange={e => pushUser(e.target.value)}  >
-
-              <option disabled selected value> -- select an option -- </option>
-              {contexto.users.map((user, index) => {
-                return <option value={user._id}>{user.name}</option>;
-              })
-              }
-            </select>
-
+            {/* <h4>relaciones: {JSON.stringify(user.users, ["name"])}</h4> */}
+            <Form.Group onChange={e => pushUser(e.target.value)}  >
+              <Form.Label>selecciona un usuario para vincular a este usuario</Form.Label>
+              <Form.Control as="select" custom>
+                {
+                contexto.users.map((user, index) => 
+                    { 
+                      return <option value={user._id}>{user.name}</option>;
+                    } 
+                  )
+                }
+              </Form.Control>
+            </Form.Group>
+            <Button onClick={()=> contexto.setopen(!contexto.open)}>doble tap para desplegar la lista de relaciones</Button>
           </div>
 
 
@@ -511,14 +558,18 @@ function Child(props) {
             <h4>empresas: {JSON.stringify(user.companys)}</h4>
             <h4>empresas: {JSON.stringify(user, ["companys"])}</h4>
           </div>
+          <Button onClick={()=>eliminarUser(userId)} variant="danger">
+            eliminar el usuario actual 
+          </Button>
         </div>
+    
       </div>
     );
-  } else {
-    return (
-      <div>otra cosa</div>
-    );
-  }
+  // } else {
+  //   return (
+  //     <div>otra cosa</div>
+  //   );
+  // }
 }
 
 function Childz() {
@@ -530,5 +581,71 @@ function Childz() {
     <div>otra cosa</div>
   );
 }
+function Example(props) {
+  const contexto = useContext(ContextUser);
+  let history = useHistory();
+  // console.log(history.location.pathname.slice(15))
+  const [open, setOpen] = useState(true);
+  const [relatives, setrelatives] = useState([]);
+  const [isloaded, setisloaded] = useState(false);
+// console.log(contexto.user._id)
+  useEffect(() => {
+    async function fetchdata() {
+      await axios.get("api/user/" + history.location.pathname.slice(15))
+        .then(response => {
+          // console.log("usuario : ", response.data)
+          let users = response.data.users;
+          console.log(users)
+          // setuser(user);
+          setrelatives(users)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+    fetchdata();
+    return setisloaded(true);
+  }, [isloaded]);
+
+    const refetch = (user) => {
+      
+      contexto.setfetch(true);
+      history.push("/usuario/lista/"+user._id)
+      contexto.setopen(false);
+    }
+
+     function usuarios() {
+      
+      return  relatives.map((user,index)=> {
+        return  (
+            <ListItem onClick={()=> refetch(user)}>
+              {user.name}
+            </ListItem>
+            )
+      })
+  }
+  return (
+    <>
+      <Drawer
+        dir="rtl"
+        modal
+        open={open}
+        onClose={() => setOpen(false)}
+      >
+        <DrawerHeader dir="ltr">
+          <DrawerTitle>relaciones</DrawerTitle>
+        </DrawerHeader>
+
+        <DrawerContent dir="ltr">
+          <List>
+           {isloaded ? usuarios() : "Loading..."}
+          </List>
+        </DrawerContent>
+      </Drawer>
+
+    </>
+  );
+}
+
 
 export default App;

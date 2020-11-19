@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-// axios.defaults.baseURL =  'https://valeria-server.herokuapp.com/';
-axios.defaults.baseURL =  'http://localhost:4000/';
+axios.defaults.baseURL =  'https://valeria-server.herokuapp.com/';
+// axios.defaults.baseURL =  'http://localhost:4000/';
 export const ContextUser = createContext();
 
 const Provider = (props) => {
@@ -16,6 +16,7 @@ const Provider = (props) => {
     const [id, setid] = useState("");
     const [time, settime] = useState(true);
     const [rols, setrols] = useState([]);
+    const [open, setopen] = useState();
 
     //GET THE ACTUAL USER ID 
     if (isAuth && time) {     
@@ -77,6 +78,8 @@ const Provider = (props) => {
 
     return (
         <ContextUser.Provider value={{
+            open,
+            setopen,
             user,
             setuser,
             id,
