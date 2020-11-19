@@ -57,7 +57,7 @@ const Provider = (props) => {
     useEffect(() => {
         async function fetchdata(){
           const request = await axios.get("api/role");
-          console.log("datos rols request",request.data)
+          // console.log("datos rols request",request.data)
           setrols(request.data)
           return request
         }

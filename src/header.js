@@ -33,7 +33,6 @@ const Header = (props) => {
 				<DrawerHeader>
 					<DrawerTitle>Bienvenido : {contexto.user.name}</DrawerTitle>
 					<DrawerSubtitle>correo : {contexto.user.email} </DrawerSubtitle>
-					<DrawerSubtitle>permisos : {contexto.user.role[0]} </DrawerSubtitle>
 				</DrawerHeader>
 				<DrawerContent>
 					<List>

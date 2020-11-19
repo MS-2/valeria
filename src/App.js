@@ -197,7 +197,7 @@ const Usuario = () => {
     axios.post("api/role", rol, options)
       .then(response => {
         contexto.setfetch(true)
-        console.log("rol creado : ", response.data)
+        // console.log("rol creado : ", response.data)
       })
       .catch(error => {
         console.log(error.response)
@@ -411,7 +411,7 @@ function Child(props) {
     axios.patch("api/user/" + userId, { "role": e }, options)
       .then(response => {
         contexto.setfetch(true);
-        console.log("usuario actualizado : ", response.data);
+        // console.log("usuario actualizado : ", response.data);
         setfetch(true);
       })
       .catch(error => {
@@ -420,12 +420,11 @@ function Child(props) {
   }
 
   const eliminarRol = (rol) => {
-    console.log("he")
     if (rol === "admin") return
     axios.patch("api/user/remove/" + userId, { "role": rol }, options)
       .then(response => {
         contexto.setfetch(true);
-        console.log("rol eliminado : ", response.data);
+        // console.log("rol eliminado : ", response.data);
         setfetch(true);
       })
       .catch(error => {
@@ -434,8 +433,6 @@ function Child(props) {
   }
 
   const pushUser = (id) => {
-    console.log(id)
-    console.log(userId)
     axios.patch("api/user/adduser/" + userId, { "id": id }, options)
       .then(response => {
         contexto.setfetch(true);
