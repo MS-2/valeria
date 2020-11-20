@@ -9,7 +9,7 @@ import { ContextUser } from './Contexto';
 import Header from './header';
 import '@rmwc/chip/styles';
 import '@rmwc/tooltip/styles';
-import { Home } from './Home';
+import Login from './Login';
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from '@rmwc/drawer';
 import { List, ListItem, ListItemGraphic } from '@rmwc/list'
 
@@ -24,7 +24,7 @@ function App() {
     return (
       <Router basename={process.env.PUBLIC_URL}>
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/" component={Login} />
           <Route component={() => <Redirect to="/" />} />
         </Switch>
 
