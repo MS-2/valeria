@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/valeria/static/css/main.0e3502ba.chunk.css",
-    "main.js": "/valeria/static/js/main.41e33f14.chunk.js",
-    "main.js.map": "/valeria/static/js/main.41e33f14.chunk.js.map",
+    "main.js": "/valeria/static/js/main.146351b8.chunk.js",
+    "main.js.map": "/valeria/static/js/main.146351b8.chunk.js.map",
     "runtime-main.js": "/valeria/static/js/runtime-main.9e6f8a1a.js",
     "runtime-main.js.map": "/valeria/static/js/runtime-main.9e6f8a1a.js.map",
     "static/css/2.7450da95.chunk.css": "/valeria/static/css/2.7450da95.chunk.css",
@@ -18,6 +18,6 @@
     "static/css/2.7450da95.chunk.css",
     "static/js/2.09051777.chunk.js",
     "static/css/main.0e3502ba.chunk.css",
-    "static/js/main.41e33f14.chunk.js"
+    "static/js/main.146351b8.chunk.js"
   ]
 }
