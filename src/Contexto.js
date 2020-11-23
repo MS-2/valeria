@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import decode from 'jwt-decode';
 axios.defaults.baseURL =  'https://valeria-server.herokuapp.com/';
 // axios.defaults.baseURL =  'http://localhost:4000/';
 export const ContextUser = createContext();
@@ -69,7 +70,10 @@ const Provider = (props) => {
       let tok = localStorage.getItem("token")
 
         if (tok) {
-          setisAuth(true)
+          setisAuth(true);
+          settoken(tok);
+          let id = decode(tok);
+          setid(id.id);
           console.log("true")
         }else{
           console.log("false")
@@ -106,7 +110,8 @@ const Provider = (props) => {
         settoken("");
         setuser({});
         setid("");
-        localStorage.removeItem("token")
+        localStorage.removeItem("token");
+        window.location.href  = "/";
     }
 
 //funcion para limpiar el registro de errores
