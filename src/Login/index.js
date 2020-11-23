@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from "axios";
 import { ContextUser } from '../Contexto';
 import decode from 'jwt-decode';
+import urlImage from '../logo512.png';
 import './Login.css';
 
 const Login = () => {
@@ -9,7 +10,7 @@ const Login = () => {
   const [msgTitle, setMsgTitle] = useState("");
   const [msgText, setMsgText] = useState("");
   const [msgCss, setMsgCss] = useState("");
-  const urlImage = './logo512.png';
+
   const start = e => {
 	e.preventDefault();
 	  
@@ -28,7 +29,8 @@ const Login = () => {
         contexto.setisAuth(true);
         contexto.settoken(response.data.token);
         let id = decode(response.data.token);
-        contexto.setid(id.id);
+		contexto.setid(id.id);
+		localStorage.setItem("token", response.data.token )
       })
       .catch(error => {
         // setlogError(error.response.data.msg);
@@ -70,10 +72,10 @@ const Login = () => {
 							</div>
 						
 							<div className="form-group m-b-15">
-								<input type="email" name="email" className="form-control form-control-lg" placeholder="Email Address" required autoComplete="username" />
+								<input type="email" name="email" className="form-control form-control-lg" placeholder="Email Address" required autoComplete="username" defaultValue="admin@localhost" />
 							</div>
 							<div className="form-group m-b-15">
-								<input type="password" name="pass" className="form-control form-control-lg" placeholder="Password" required autoComplete="current-password"/>
+								<input type="password" name="pass" className="form-control form-control-lg" placeholder="Password" required autoComplete="current-password" defaultValue="admin"/>
 							</div>
 							<div className="checkbox checkbox-css m-b-30">
 								<input type="checkbox" id="remember_me_checkbox" value="" />

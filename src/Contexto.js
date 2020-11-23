@@ -6,6 +6,8 @@ export const ContextUser = createContext();
 
 const Provider = (props) => {
 
+    // const [locastorageToken, setlocastorageToken] = useState(localStorage.getItem("token"));
+
       /** => condicion para TODAS las llamadas a fetch asyncronas @type {bool} */ /**/
     const [fetch, setfetch] = useState(false);
 
@@ -61,6 +63,21 @@ const Provider = (props) => {
         return setfetch(false);
       }, [fetch]);
 
+// Localstorage
+    useEffect(() => {
+
+      let tok = localStorage.getItem("token")
+
+        if (tok) {
+          setisAuth(true)
+          console.log("true")
+        }else{
+          console.log("false")
+        }
+      
+
+    }, []);
+
 // cuando se registra, modifica o elimina un usuario esta funcion refresca la data mostrada en pantalla 
     useEffect(() => {
         async function fetchdata(){
@@ -89,6 +106,7 @@ const Provider = (props) => {
         settoken("");
         setuser({});
         setid("");
+        localStorage.removeItem("token")
     }
 
 //funcion para limpiar el registro de errores

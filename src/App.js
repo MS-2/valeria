@@ -3,7 +3,7 @@ import axios from "axios";
 import { BrowserRouter as Router, Route, Switch, Redirect, useParams, Link, useHistory } from "react-router-dom";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
-import { Col, Row, Image, Badge } from 'react-bootstrap';
+import { Col, Row, Image, Badge, Container } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { ContextUser } from './Contexto';
 import Header from './header';
@@ -156,6 +156,10 @@ const Usuario = () => {
   const token = contexto.token;
   const options = { headers: { 'x-access-token': token } };
   const [response, setresponse] = useState('');
+  const [component, setcomponent] = useState([]);
+  const [mostrar, setmostrar] = useState(false);
+  const [mostrar2, setmostrar2] = useState(false);
+
   const crear = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -175,6 +179,111 @@ const Usuario = () => {
       })
   }
 
+  const crearInput = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const put = {}
+    for (let input of formData.entries()) {
+      put[input[0]] = input[1]
+    }
+    console.log("put",put)
+   
+    const NuevoInput = () => {
+     return (
+       <div>
+        <Form.Label>{put.rotulo}</Form.Label>
+        <Form.Control type="text" placeholder="nuevo input" name={put.rotulo} required={put.check === "on" ? true : false} />
+      </div>
+     )
+    }
+    console.log(component)
+    setcomponent(oldArray=> [...oldArray,<NuevoInput></NuevoInput>])
+    setmostrar(false)
+  }
+
+  const eliminarInput = async (e) => {
+    // e.preventDefault();
+    // let name = e.target.value;
+    // let name = e;
+    // console.log(e)
+    // let newc = 
+    // setcomponent(oldArray => [...oldArray,<NuevoInput></NuevoInput>])
+    // let asd = setcomponent(component.splice(e,1));
+    setcomponent(oldArray => component.splice(e,1,oldArray[e]));
+    console.log(component)
+    // console.log(component)
+    // let new = component.splice(index -1, 1);
+    // setcomponent(component);
+
+  }
+  const FormularioDeRegistroUsuarios = e => {
+  return (
+   
+    <Form onSubmit={crear} style={{margin:40, padding:40}}>
+      <div>
+        campos basicos de registros puedes añadir campos personalizados que seran añadidos al perfil del usuario
+      </div>
+
+        <Form.Label>Nombre de pila</Form.Label>
+        <Form.Control type="text" placeholder="Nombre" name="name" required maxlength="64" />
+
+        <Form.Label>Correo Electronico </Form.Label>
+        <Form.Control type="email" placeholder="@example.com" name="email" required maxlength="64" />
+
+        <Form.Label>Contraseña</Form.Label>
+        <Form.Control type="password" placeholder="8-16 caracteres alfanumericos" name="pass" required  maxlength="16"/>
+        {component ? component.map((input,index)=>{
+        return <div>{input} <button onClick={ (e)=>  {e.preventDefault(); eliminarInput(index);}}>eliminar</button></div>
+        }) : null}
+        <Form.Label>La Informacion suministrada es de caracter personal</Form.Label>
+      <Button block variant="primary" type="submit">crear usuario</Button>
+    </Form>
+
+    );
+  }
+
+  const FormularioParaLaCreacionInputs = e => {
+    return (
+      <div>
+      <Form onSubmit={crearInput}>
+        <Form.Label>rotulo</Form.Label>
+        <Form.Control type="text" placeholder="rotulo" name="rotulo" required />
+        <Form.Check type="checkbox" label="Es un campo requerido?" name="check" />
+        <Button type="submit">añadir Input</Button>
+      </Form>
+      </div>
+    )
+  }
+
+
+  return (
+    <div>
+
+
+      <div style={{margin:40, backgroundColor:"yellow", borderRadius:14}}>
+        {mostrar ?  null : <FormularioDeRegistroUsuarios></FormularioDeRegistroUsuarios>}
+        </div>
+        {mostrar ? <FormularioParaLaCreacionInputs></FormularioParaLaCreacionInputs>: null}
+
+        {mostrar ? <button onClick={()=>setmostrar(false)}>volver atras</button> :  <button onClick={()=>setmostrar(true)}>crear nuevo input</button>}
+       
+        {response ? <div style={{ backgroundColor: "green", color: "white" }}>{response}</div> : null}
+
+        <pre>{JSON.stringify(contexto.users, ["_id", "email", "name"], 1)}</pre>
+
+
+    </div>
+  )
+}
+
+const CreateRoles = () => {
+
+  const contexto = useContext(ContextUser);
+  const token = contexto.token;
+  const options = { headers: { 'x-access-token': token } };
+  const [response, setresponse] = useState('');
+
+
   const crearRol = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -193,56 +302,26 @@ const Usuario = () => {
   }
 
   return (
-    <div style={{ display: "flex", width: 100 + "%", flexWrap: "wrap" }}>
-
-      <div style={{ flex: 1, backgroundColor: "pink" }}>
-        <Form onSubmit={crear} style={{margin:40}}>
-          <Form.Group controlId="name">
-            <Form.Label>Nombre completo</Form.Label>
-            <Form.Control type="text" placeholder="Nombre completo" name="name" />
-          </Form.Group>
-          <Form.Group controlId="email">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" placeholder="Enter email" name="email" />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
-          <Form.Group controlId="pass">
-            <Form.Label>Password</Form.Label>
-            <Form.Control type="password" placeholder="Password" name="pass" />
-          </Form.Group>
-          <Form.Group controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" label="Check me out" />
-          </Form.Group>
-          <Button block variant="primary" type="submit">crear usuario</Button>
-        </Form>
-        {response ? <div style={{ backgroundColor: "green", color: "white" }}>{response}</div> : null}
-        <pre>{JSON.stringify(contexto.users, ["_id", "email", "name"], 1)}</pre>
-      </div>
-
-      <div style={{ flex: 1, backgroundColor: "greenyellow" }}>
-        <Form onSubmit={crearRol}>
-          <Form.Group controlId="name" style={{margin:40}}>
-            <Form.Label>nombre del rol</Form.Label>
-            <Form.Control type="text" name="name" />
-            <Form.Text className="text-muted">
-            Introduzca nombre descriptivo para el rol
-            </Form.Text>
-          </Form.Group>
-          <Form.Group controlId="description">
-            <Form.Label>description</Form.Label>
-            <Form.Control type="text" placeholder="description" name="description" />
-          </Form.Group>
-          <Button block variant="success" type="submit">
-            Submit
-          </Button>
-        </Form>
-        <pre>roles{JSON.stringify(contexto.rols, ["name", "description"], 1)}</pre>
-      </div>
-
-    </div>
-  );
+    <div style={{ flex: 1, backgroundColor: "greenyellow" }}>
+    <Form onSubmit={crearRol}>
+      <Form.Group controlId="name" style={{margin:40}}>
+        <Form.Label>nombre del rol</Form.Label>
+        <Form.Control type="text" name="name" />
+        <Form.Text className="text-muted">
+        Introduzca nombre descriptivo para el rol
+        </Form.Text>
+      </Form.Group>
+      <Form.Group controlId="description">
+        <Form.Label>description</Form.Label>
+        <Form.Control type="text" placeholder="description" name="description" />
+      </Form.Group>
+      <Button block variant="success" type="submit">
+        Submit
+      </Button>
+    </Form>
+    <pre>roles{JSON.stringify(contexto.rols, ["name", "description"], 1)}</pre>
+  </div>
+  )
 }
 
 const Main = (props) => {
@@ -251,6 +330,7 @@ const Main = (props) => {
   const usuarios = contexto.users;
   const roles = contexto.rols;
   const { history } = props;
+  const [component, setcomponent] = useState([]);
 
   const listaDiv = empresas.map((empresa) =>
     <button key={empresa._id} style={{ margin: 5, borderStyle: "solid", backgroundColor: "pink", width: 300, height: 150 }}>
@@ -264,9 +344,11 @@ const Main = (props) => {
       </div>
     </button>
   );
+
+  const elemento = <h1>asdas</h1>
   return (
     <div>
-
+     
       <pre><h1>EMPRESAS</h1>{JSON.stringify(empresas, ["_id", "name", "empresa", "nit"], 2)}</pre>
       <div>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center" }}>
