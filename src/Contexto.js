@@ -1,8 +1,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import decode from 'jwt-decode';
-axios.defaults.baseURL =  'https://valeria-server.herokuapp.com/';
-// axios.defaults.baseURL =  'http://localhost:4000/';
+// axios.defaults.baseURL =  'https://valeria-server.herokuapp.com/';
+axios.defaults.baseURL =  'http://localhost:4000/';
 export const ContextUser = createContext();
 
 const Provider = (props) => {
@@ -50,7 +50,8 @@ const Provider = (props) => {
         settime(false)
         })
         .catch(error => {
-        console.log(error)
+        // console.log(error)
+        window.location.href  = "/valeria";
         })
     }
 // cuando se registra, modifica o elimina una compañia esta funcion refresca la data mostrada en pantalla 
