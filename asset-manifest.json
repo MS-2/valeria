@@ -1,23 +1,23 @@
 {
   "files": {
     "main.css": "/valeria/static/css/main.0e3502ba.chunk.css",
-    "main.js": "/valeria/static/js/main.7c7629ef.chunk.js",
-    "main.js.map": "/valeria/static/js/main.7c7629ef.chunk.js.map",
+    "main.js": "/valeria/static/js/main.8cf186f2.chunk.js",
+    "main.js.map": "/valeria/static/js/main.8cf186f2.chunk.js.map",
     "runtime-main.js": "/valeria/static/js/runtime-main.9e6f8a1a.js",
     "runtime-main.js.map": "/valeria/static/js/runtime-main.9e6f8a1a.js.map",
     "static/css/2.7450da95.chunk.css": "/valeria/static/css/2.7450da95.chunk.css",
-    "static/js/2.ee29c6c1.chunk.js": "/valeria/static/js/2.ee29c6c1.chunk.js",
-    "static/js/2.ee29c6c1.chunk.js.map": "/valeria/static/js/2.ee29c6c1.chunk.js.map",
+    "static/js/2.09051777.chunk.js": "/valeria/static/js/2.09051777.chunk.js",
+    "static/js/2.09051777.chunk.js.map": "/valeria/static/js/2.09051777.chunk.js.map",
     "index.html": "/valeria/index.html",
     "static/css/2.7450da95.chunk.css.map": "/valeria/static/css/2.7450da95.chunk.css.map",
     "static/css/main.0e3502ba.chunk.css.map": "/valeria/static/css/main.0e3502ba.chunk.css.map",
-    "static/js/2.ee29c6c1.chunk.js.LICENSE.txt": "/valeria/static/js/2.ee29c6c1.chunk.js.LICENSE.txt"
+    "static/js/2.09051777.chunk.js.LICENSE.txt": "/valeria/static/js/2.09051777.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.9e6f8a1a.js",
     "static/css/2.7450da95.chunk.css",
-    "static/js/2.ee29c6c1.chunk.js",
+    "static/js/2.09051777.chunk.js",
     "static/css/main.0e3502ba.chunk.css",
-    "static/js/main.7c7629ef.chunk.js"
+    "static/js/main.8cf186f2.chunk.js"
   ]
 }
