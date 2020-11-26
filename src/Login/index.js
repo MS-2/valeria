@@ -42,7 +42,7 @@ const Login = () => {
       }); 
   };
   return (
-		<div className={'content content-full-width content-inverse-mode '}>
+		<div className={'content content-full-width content-inverse-mode'}>
    			<div className="login login-with-news-feed">
 				<div className="news-feed">
 					<div className="news-image" style={{backgroundImage: `url(${urlImage})`}}></div>
@@ -72,10 +72,10 @@ const Login = () => {
 							</div>
 						
 							<div className="form-group m-b-15">
-								<input type="email" name="email" className="form-control form-control-lg" placeholder="Email Address" required autoComplete="username" defaultValue="admin@localhost" />
+								<input  type="email" name="email" className="browser-default form-control form-control-lg" placeholder="Email Address" required autoComplete="username" defaultValue="admin@localhost" />
 							</div>
 							<div className="form-group m-b-15">
-								<input type="password" name="pass" className="form-control form-control-lg" placeholder="Password" required autoComplete="current-password" defaultValue="admin"/>
+								<input type="password" name="pass" className="browser-default form-control form-control-lg" placeholder="Password" required autoComplete="current-password" defaultValue="admin"/>
 							</div>
 							<div className="checkbox checkbox-css m-b-30">
 								<input type="checkbox" id="remember_me_checkbox" value="" />

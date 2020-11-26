@@ -6,14 +6,16 @@ import Form from 'react-bootstrap/Form';
 import { Col, Row, Image, Badge, Container } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { ContextUser } from './Contexto';
-import Header from './header';
+// import Header from './header';
+import Header from './header2';
 import '@rmwc/chip/styles';
 import '@rmwc/tooltip/styles';
 import Login from './Login';
 import { Drawer, DrawerHeader, DrawerTitle, DrawerContent } from '@rmwc/drawer';
-import { List, ListItem, ListItemGraphic } from '@rmwc/list'
-
-
+import { List, ListItem, ListItemGraphic } from '@rmwc/list';
+import "materialize-css/dist/css/materialize.min.css";
+import "materialize-css/dist/js/materialize.min.js";
+import faker from 'faker'
 function App() {
 
   const [boo, setboo] = useState(false);
@@ -158,24 +160,33 @@ const Usuario = () => {
   const [response, setresponse] = useState('');
   const [component, setcomponent] = useState([]);
   const [mostrar, setmostrar] = useState(false);
-  const [mostrar2, setmostrar2] = useState(false);
+  const [msgCss, setMsgCss] = useState("");
+  const [msgTitle, setMsgTitle] = useState("");
+  const [msgText, setMsgText] = useState("");
 
   const crear = async (e) => {
     e.preventDefault();
+    setMsgTitle("usuario : ");
+	  setMsgCss("alert-success show");
     const formData = new FormData(e.target);
     const user = {}
     for (let input of formData.entries()) {
       user[input[0]] = input[1]
     }
+
     axios.post("api/user", user, options)
       .then(response => {
         contexto.setfetch(true)
-        setresponse("usuario : " + response.data.name + "creado con exito")
-        // console.log("usuario creado : ", response.data)
+        setMsgText(response.data.name + " creado con exito")
+        setMsgTitle("usuario : ");
+        setMsgCss("alert-success show");
+        setresponse(".")
       })
       .catch(error => {
-        setresponse(error.response.data.message)
-        // console.log(error.response.data.message)
+        setMsgTitle("Atención! ");
+		    setMsgText(error.response.data.message);
+        setMsgCss("alert-danger show");
+        setresponse(".")
       })
   }
 
@@ -190,10 +201,10 @@ const Usuario = () => {
    
     const NuevoInput = () => {
      return (
-       <div>
+       <>
         <Form.Label>{put.rotulo}</Form.Label>
-        <Form.Control type="text" placeholder="nuevo input" name={put.rotulo} required={put.check === "on" ? true : false} />
-      </div>
+        <Form.Control type="text" name={put.rotulo} required={put.check === "on" ? true : false} />
+      </>
      )
     }
     console.log(component)
@@ -201,43 +212,54 @@ const Usuario = () => {
     setmostrar(false)
   }
 
-  const eliminarInput = async (e) => {
-    // e.preventDefault();
-    // let name = e.target.value;
-    // let name = e;
-    // console.log(e)
-    // let newc = 
-    // setcomponent(oldArray => [...oldArray,<NuevoInput></NuevoInput>])
-    // let asd = setcomponent(component.splice(e,1));
-    setcomponent(oldArray => component.splice(e,1,oldArray[e]));
-    console.log(component)
-    // console.log(component)
-    // let new = component.splice(index -1, 1);
-    // setcomponent(component);
-
+  const eliminarInput =  (e) => {
+    setcomponent(component.filter((currentValue, index, arr)=> index !== e))
   }
+
   const FormularioDeRegistroUsuarios = e => {
   return (
    
-    <Form onSubmit={crear} style={{margin:40, padding:40}}>
-      <div>
-        campos basicos de registros puedes añadir campos personalizados que seran añadidos al perfil del usuario
-      </div>
-
-        <Form.Label>Nombre de pila</Form.Label>
-        <Form.Control type="text" placeholder="Nombre" name="name" required maxlength="64" />
-
-        <Form.Label>Correo Electronico </Form.Label>
-        <Form.Control type="email" placeholder="@example.com" name="email" required maxlength="64" />
-
-        <Form.Label>Contraseña</Form.Label>
-        <Form.Control type="password" placeholder="8-16 caracteres alfanumericos" name="pass" required  maxlength="16"/>
-        {component ? component.map((input,index)=>{
-        return <div>{input} <button onClick={ (e)=>  {e.preventDefault(); eliminarInput(index);}}>eliminar</button></div>
-        }) : null}
-        <Form.Label>La Informacion suministrada es de caracter personal</Form.Label>
-      <Button block variant="primary" type="submit">crear usuario</Button>
-    </Form>
+      <form onSubmit={crear}>
+       <h3>
+        campos basicos de registros
+       </h3>
+       <p> puedes añadir campos personalizados que seran añadidos al perfil del usuario</p>
+        <div class="browser-default">
+            <div class="input-field">
+              <input id="name" type="text" name="name" required maxlength="64" class="validate" value={faker.name.firstName()} ></input>
+              <label for="name">PRIMER NOMBRE</label>
+              <span class="helper-text" data-error="error" data-success="correcto"></span>
+          </div>
+        </div>
+        <div>
+            <div class="input-field">
+              <input type="email"  name="email" required maxlength="64" class="validate" value={faker.internet.email()} ></input>
+              <label for="email">CORREO ELECTRONICO</label>
+              <span class="helper-text" data-error="error" data-success="correcto">@example.com</span>
+          </div>
+        </div>
+        <div>
+            <div class="input-field">
+              <input type="password"  name="pass" required minLength="4" maxlength="16" class="validate" defaultValue="123456"></input>
+              <label for="pass">CONTRASEÑA</label>
+              <span class="helper-text" data-error="error" data-success="correcto">4-16 alfanumeric</span>
+          </div>
+        </div>
+        {
+        component.length >= 1 ? component.map((com,index)=>{
+        return (
+          <div key={index}>
+            <div class="row">
+              <div class="col s10">
+                  {com}            
+              </div>
+              <Link onClick={ (e)=>  {e.preventDefault(); eliminarInput(index);}} class="text-red">remover</Link>       
+            </div>
+          </div>
+          )
+        }) : null
+      } <Button block type="submit">crear usuario</Button>
+      </form>
 
     );
   }
@@ -245,33 +267,54 @@ const Usuario = () => {
   const FormularioParaLaCreacionInputs = e => {
     return (
       <div>
-      <Form onSubmit={crearInput}>
-        <Form.Label>rotulo</Form.Label>
-        <Form.Control type="text" placeholder="rotulo" name="rotulo" required />
-        <Form.Check type="checkbox" label="Es un campo requerido?" name="check" />
-        <Button type="submit">añadir Input</Button>
-      </Form>
+        <h3>creacion de etiquetas</h3>
+        <p>aqui puedes crear un campo que sera asignado al usuario Ejemplo : direccion, edad, alguna nota etc etc</p>
+      <form onSubmit={crearInput}>
+        <label>ROTULO</label>
+        <input type="text" placeholder="rotulo" name="rotulo" minLength="3" maxLength="9" required></input>
+        <div class="fixed-action-btn">
+        {mostrar ? 
+        <button type="submit" class="btn-floating btn-large green pulse" style={{marginBottom:140, marginRight:20}}><i class="material-icons">add</i></button>
+         : 
+        null
+        }
+        </div>
+      </form>
       </div>
+    )
+  }
+
+  const AlertaCustom = e => {
+    return(
+    <div style={{marginTop:10}} className={msgCss + " alert fade m-b-15 p-t-10 p-b-10"}  id="msg_alert">
+      <strong id="msg_title" >{msgTitle}</strong>
+      <span id="msg_text">{msgText}</span>
+    </div>
     )
   }
 
 
   return (
-    <div>
+    <div class="container">
 
-
-      <div style={{margin:40, backgroundColor:"yellow", borderRadius:14}}>
-        {mostrar ?  null : <FormularioDeRegistroUsuarios></FormularioDeRegistroUsuarios>}
+        <div>
+        {mostrar ?  null : (
+          <div>
+          {response ? <AlertaCustom /> : null}
+          <FormularioDeRegistroUsuarios></FormularioDeRegistroUsuarios>
+          </div>)}
         </div>
-        {mostrar ? <FormularioParaLaCreacionInputs></FormularioParaLaCreacionInputs>: null}
 
-        {mostrar ? <button onClick={()=>setmostrar(false)}>volver atras</button> :  <button onClick={()=>setmostrar(true)}>crear nuevo input</button>}
-       
-        {response ? <div style={{ backgroundColor: "green", color: "white" }}>{response}</div> : null}
+        {mostrar ? <FormularioParaLaCreacionInputs></FormularioParaLaCreacionInputs>: null}
 
         <pre>{JSON.stringify(contexto.users, ["_id", "email", "name"], 1)}</pre>
 
-
+        <div class="fixed-action-btn">
+        {mostrar ? 
+        <a class="btn-floating btn-large red pulse" style={{marginBottom:70, marginRight:20}}  onClick={()=>setmostrar(false)}><i class="material-icons">keyboard_return</i>volver</a>
+         : 
+        <a class="btn-floating btn-large cyan pulse" style={{marginBottom:70, marginRight:20}} onClick={()=>setmostrar(true)}><i class="material-icons">add</i>crear</a>}
+        </div>
     </div>
   )
 }
@@ -294,7 +337,6 @@ const CreateRoles = () => {
     axios.post("api/role", rol, options)
       .then(response => {
         contexto.setfetch(true)
-        // console.log("rol creado : ", response.data)
       })
       .catch(error => {
         console.log(error.response)
@@ -355,6 +397,10 @@ const Main = (props) => {
           {listaDiv}
         </div>
       </div>
+      <div class="chip">
+          Tagasdasdasdad
+          <i class="close material-icons">close</i>
+        </div>
       <pre><h1>USUARIOS</h1>{JSON.stringify(usuarios, ["_id", "email"], 1)}</pre>
       <pre><h1>ROLES</h1>{JSON.stringify(roles, null, 1)}</pre>
     </div>
