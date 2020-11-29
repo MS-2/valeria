@@ -174,6 +174,17 @@ const Usuario = () => {
       user[input[0]] = input[1]
     }
 
+    let clavesValor = Object.entries(user);
+    console.log(clavesValor);
+    const res = clavesValor.filter(element =>element[0] !== "pass" && element[0] !== "email" && element[0] !== "name");
+    console.log(res);
+    let objectExtraInputs = Object.fromEntries(res);
+    console.log(objectExtraInputs);
+
+    user["info"] = objectExtraInputs;
+
+    console.log(user);
+ 
     axios.post("api/user", user, options)
       .then(response => {
         contexto.setfetch(true)
@@ -307,7 +318,7 @@ const Usuario = () => {
 
         {mostrar ? <FormularioParaLaCreacionInputs></FormularioParaLaCreacionInputs>: null}
 
-        <pre>{JSON.stringify(contexto.users, ["_id", "email", "name"], 1)}</pre>
+        <pre>{JSON.stringify(contexto.users, null, 1)}</pre>
 
         <div class="fixed-action-btn">
         {mostrar ? 
