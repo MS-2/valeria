@@ -37,7 +37,6 @@ const Header = (props) => {
 
             <ul className="sidenav" id="mobile-demo">
 
-
                 <li>
 
                     <div className="user-view cyan">
