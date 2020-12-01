@@ -4,6 +4,8 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import Provider from './Contexto';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "materialize-css/dist/css/materialize.min.css";
+import "materialize-css/dist/js/materialize.min.js";
 
 /** => Provider es el contenedor global de la app @type {Object} */ /**/
 
